@@ -150,6 +150,7 @@ const StackedCarousel: React.FC = () => {
     </View>
   );
 };
+const {height} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -161,7 +162,7 @@ const styles = StyleSheet.create({
     width: width,
   },
   scrollViewContent: {
-    paddingHorizontal: (width - (width * 0.8)) / 2,
+    paddingHorizontal: width * 0.1, // 10% padding on each side
   },
   pagination: {
     flexDirection: 'row',
@@ -176,8 +177,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
   },
   card: {
-    height: 400,
-    marginLeft: 10,
+    top: 0.37 * height,
+    height: 305,
+    width: 329,
+    marginHorizontal: 10, // Equal margins on both sides
     backgroundColor: '#2A2A2A',
     borderRadius: 20,
     padding: 20,
