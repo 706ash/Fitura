@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     minHeight: '100%',
   },
   cardSmallScreen: {
-    top: 220,
+    top: 170,
     width: 300,
     height: 300,
     marginTop: 160,

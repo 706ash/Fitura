@@ -173,6 +173,5 @@ const styles = StyleSheet.create({
         fontSize: Platform.OS ==='android'? 28 : 50,
         letterSpacing: 3,
         textAlign: 'center'
-
     },
 });
