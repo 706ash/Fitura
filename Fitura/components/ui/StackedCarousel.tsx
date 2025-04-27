@@ -193,8 +193,8 @@ const styles = StyleSheet.create({
   },
   card: {
     position: 'relative',
-    marginTop: Platform.OS === 'android' ? height * 0.4 : height * 0.2,
-    height: 300,
+    marginTop: Platform.OS === 'android' ? height * 0.29 : height * 0.2,
+    height: 270,
     marginHorizontal: 10,
     borderRadius: 20,
     padding: 20,

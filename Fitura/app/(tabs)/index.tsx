@@ -59,7 +59,8 @@ export default function Dashboard() {
 
 
                 <View style={styles.section_2}>
-                    {/*MIDDLE SECTION*/}            
+                    {/*MIDDLE SECTION*/}  
+                    <Text style={styles.middle_section_text}>STYLE MEETS COMFORT. PAIR THIS LOOK WITH</Text>          
                     <StackedCarousel />
                 </View> 
 
@@ -160,9 +161,18 @@ const styles = StyleSheet.create({
     },
 
     section_2: {
+        position: 'relative',
         height: height,
+        alignItems: 'center',
         backgroundColor: '#1E1E1E',
-        
-        
-    }
+    },
+
+    middle_section_text: {
+        top: Platform.OS ==='android'? 50 : 105,
+        color: 'white',
+        fontSize: Platform.OS ==='android'? 28 : 50,
+        letterSpacing: 3,
+        textAlign: 'center'
+
+    },
 });
