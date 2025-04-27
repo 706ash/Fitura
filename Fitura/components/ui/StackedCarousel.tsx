@@ -1,96 +1,77 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, Dimensions, Platform, ScrollView, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
+import React, { useRef, useState, useEffect } from 'react';
+import { 
+  View, 
+  Text, 
+  Image, 
+  StyleSheet, 
+  Dimensions, 
+  Platform, 
+  ScrollView, 
+  NativeSyntheticEvent, 
+  NativeScrollEvent 
+} from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient'; // Changed import
 
 interface CarouselItem {
   title: string;
   image: any;
 }
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
-const data = [
+const data: CarouselItem[] = [
   {
-    title: "Brown Boots",
+    title: "BROWN BOOTS",
     image: require('../../assets/images/brown_boots.png')
   },
   {
-    title: "Black Seiko",
+    title: "BLACK SEIKO",
     image: require('../../assets/images/black_seiko.png')
   },
   {
-    title: "Aviator Glasses",
+    title: "AVIATOR GLASSES",
     image: require('../../assets/images/aviator_glasses.png')
   },
   {
-    title: "Brown Bag",
+    title: "BROWN BAG",
     image: require('../../assets/images/brown_bag.png')
   },
 ];
 
+const BREAKPOINT_WIDTH = 768; // Breakpoint for mobile web view
+
 const StackedCarousel: React.FC = () => {
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
   const [currentIndex, setCurrentIndex] = useState(data.length);
-  const [isScrolling, setIsScrolling] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  
-  const cardWidth = width * 0.8;
-  const spacing = 20;
+
+  useEffect(() => {
+    if (Platform.OS === 'web') {
+      const handleResize = () => {
+        setIsSmallScreen(window.innerWidth < BREAKPOINT_WIDTH);
+      };
+      
+      handleResize(); // Initial check
+      window.addEventListener('resize', handleResize);
+      
+      return () => window.removeEventListener('resize', handleResize);
+    }
+  }, []);
+
+  const cardWidth = Platform.OS === 'web' 
+    ? isSmallScreen ? width * 0.8 : 250 
+    : width * 0.8;
+    
+  const spacing = Platform.OS === 'web' ? 30 : 20;
   const totalWidth = cardWidth + spacing;
 
-  const scrollToIndex = (index: number, animated: boolean = true) => {
-    scrollViewRef.current?.scrollTo({
-      x: totalWidth * index,
-      animated
-    });
-  };
-
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    if (isScrolling) return;
-    
-    const offsetX = event.nativeEvent.contentOffset.x;
-    const index = Math.round(offsetX / totalWidth);
-    
-    if (index < data.length) {
-      requestAnimationFrame(() => {
-        scrollToIndex(index + data.length, false);
-        setCurrentIndex(index + data.length);
-      });
-    } else if (index >= data.length * 2) {
-      requestAnimationFrame(() => {
-        scrollToIndex(index - data.length, false);
-        setCurrentIndex(index - data.length);
-      });
-    } else {
+    if (Platform.OS === 'android') {
+      const offsetX = event.nativeEvent.contentOffset.x;
+      const index = Math.round(offsetX / totalWidth);
       setCurrentIndex(index);
     }
   };
-
-  const startAutoScroll = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
-    timeoutRef.current = setTimeout(() => {
-      if (!isScrolling) {
-        const nextIndex = currentIndex + 1;
-        scrollToIndex(nextIndex);
-        setCurrentIndex(nextIndex);
-      }
-      startAutoScroll();
-    }, 3000);
-  };
-
-  useEffect(() => {
-    // Initial scroll to middle set
-    scrollToIndex(data.length, false);
-    startAutoScroll();
-
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
 
   const normalizedIndex = ((currentIndex % data.length) + data.length) % data.length;
 
@@ -98,34 +79,36 @@ const StackedCarousel: React.FC = () => {
     <View style={styles.container}>
       <ScrollView
         ref={scrollViewRef}
-        horizontal
-        pagingEnabled
-        decelerationRate="fast"
+        horizontal={Platform.OS === 'android' || !isSmallScreen}
+        pagingEnabled={Platform.OS === 'android'}
+        decelerationRate={Platform.OS === 'android' ? "fast" : "normal"}
         showsHorizontalScrollIndicator={false}
         onScroll={handleScroll}
         scrollEventThrottle={16}
-        onScrollBeginDrag={() => {
-          setIsScrolling(true);
-          if (timeoutRef.current) {
-            clearTimeout(timeoutRef.current);
-          }
-        }}
-        onScrollEndDrag={() => {
-          setIsScrolling(false);
-          startAutoScroll();
-        }}
-        onMomentumScrollEnd={() => {
-          setIsScrolling(false);
-          startAutoScroll();
-        }}
         style={styles.scrollView}
-        contentContainerStyle={styles.scrollViewContent}
+        contentContainerStyle={[
+          styles.scrollViewContent,
+          Platform.OS === 'web' && (
+            isSmallScreen ? styles.webScrollViewContentSmall : styles.webScrollViewContent
+          )
+        ]}
+        snapToInterval={Platform.OS === 'android' ? totalWidth : undefined}
       >
-        {[...data, ...data, ...data].map((item, index) => (
+        {(Platform.OS === 'android' ? [...data, ...data, ...data] : data).map((item, index) => (
           <View
             key={`${item.title}-${index}`}
-            style={[styles.card, { width: cardWidth }]}
+            style={[
+              styles.card, 
+              { width: cardWidth },
+              Platform.OS === 'web' && isSmallScreen && styles.cardSmallScreen
+            ]}
           >
+            <LinearGradient
+              colors={['#FF4E50', '#F9D423']}
+              start={{ x: 0.3, y: 0.3 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.gradient}
+            />
             <Image
               source={item.image}
               style={styles.image}
@@ -136,27 +119,33 @@ const StackedCarousel: React.FC = () => {
         ))}
       </ScrollView>
 
-      <View style={styles.pagination}>
-        {data.map((_, index) => (
-          <View
-            key={index}
-            style={[
-              styles.dot,
-              { backgroundColor: normalizedIndex === index ? '#fff' : '#666' }
-            ]}
-          />
-        ))}
-      </View>
+      {Platform.OS === 'android' && (
+        <View style={styles.pagination}>
+          {data.map((_, index) => (
+            <View
+              key={index}
+              style={[
+                styles.dot,
+                { backgroundColor: normalizedIndex === index ? '#fff' : '#666' }
+              ]}
+            />
+          ))}
+        </View>
+      )}
     </View>
   );
 };
-const {height} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    ...Platform.select({
+      web: {
+        userSelect: 'none',
+      }
+    })
   },
   scrollView: {
     width: width,
@@ -171,17 +160,42 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   dot: {
-    width: 8,
-    height: 8,
+    bottom: 70,
+    width: 10,
+    height: 10,
     borderRadius: 4,
     marginHorizontal: 4,
   },
+  webScrollViewContent: {
+    top: 80,
+    // paddingHorizontal: 100,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 30,
+    height: '100%',
+  },
+  webScrollViewContentSmall: {
+    paddingHorizontal: 20,
+    flexDirection: 'column',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    gap: 20,
+    minHeight: '100%',
+  },
+  cardSmallScreen: {
+    top: 220,
+    width: 300,
+    height: 300,
+    marginTop: 160,
+    marginBottom: 20,
+  },
   card: {
-    top: 0.37 * height,
-    height: 305,
-    width: 329,
-    marginHorizontal: 10, // Equal margins on both sides
-    backgroundColor: '#2A2A2A',
+    position: 'relative',
+    marginTop: Platform.OS === 'android' ? height * 0.4 : height * 0.2,
+    height: 300,
+    marginHorizontal: 10,
     borderRadius: 20,
     padding: 20,
     alignItems: 'center',
@@ -201,16 +215,37 @@ const styles = StyleSheet.create({
       },
     }),
   },
+
+  gradient: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    borderRadius: 20,
+    overflow: 'hidden', // Move overflow to gradient instead of card
+  },
+
   image: {
+    position: 'absolute',
+    top: -120, // Adjust this value to position the image higher above the card
     width: '80%',
     height: 200,
+    zIndex: 1, // Ensure image appears above the gradient
   },
+
   title: {
     marginTop: 20,
     fontSize: 24,
     color: '#fff',
     fontWeight: 'bold',
   },
+  webScrollView: Platform.select({
+    web: {
+      scrollBehavior: 'smooth',
+      cursor: 'grab',
+    }
+  }),
 });
 
 export default StackedCarousel;
