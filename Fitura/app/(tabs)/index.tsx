@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   outfit: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 20,
+    marginTop: Platform.OS === 'android' ? -60: -90,
   },
 
   outfit_image1: {
@@ -120,11 +120,11 @@ const styles = StyleSheet.create({
     width: 290,
     height: 290,
     resizeMode: 'contain',        
-    marginTop: -20,
+    marginTop: -5,
   },
 
   roundedButton: {
-    marginTop: 40,
+    marginTop: 20,
     backgroundColor: '#1E1E1E',
     borderRadius: 40,
     paddingHorizontal: 40,
