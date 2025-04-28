@@ -58,7 +58,33 @@ export default function Dashboard() {
           <Text style={styles.middle_section_text}>STYLE MEETS COMFORT. PAIR THIS LOOK WITH</Text>          
           <StackedCarousel />
         </View>
-      </ScrollView>
+
+        {/* SECTION 3 */}
+        <LinearGradient
+          colors={['#F9D423','#FF4E50']}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+          style={[styles.section_1, { minHeight: sectionHeight * 1.5 }]}
+        >
+          <View style={styles.outfit}>
+            <Image source={require('../../assets/outfit_history/polaroid_1.png')} style={styles.polaroid_1} />
+            <Image source={require('../../assets/outfit_history/polaroid_2.png')} style={styles.polaroid_2} />
+            <Image source={require('../../assets/outfit_history/polaroid_3.png')} style={styles.polaroid_3} />
+          </View>
+
+          <View style={styles.section_3_button}>
+            <TouchableOpacity
+              style={[styles.roundedButton, isPressed && styles.buttonPressed]}
+              activeOpacity={0.7}
+              onPressIn={() => setIsPressed(true)}
+              onPressOut={() => setIsPressed(false)}
+            >
+            <Text style={styles.buttonText}>SEE-MORE</Text>
+            </TouchableOpacity>            
+          </View>           
+          
+        </LinearGradient>
+      </ScrollView>      
     </View>
   );
 }
@@ -162,5 +188,18 @@ const styles = StyleSheet.create({
     letterSpacing: 3,
     textAlign: 'center',
     marginBottom: 20,
+  },
+
+  polaroid_1:{
+    marginTop: 40,
+  },
+  polaroid_2:{
+    marginTop: 40,
+  },
+  polaroid_3:{
+    marginTop: 40,
+  },
+  section_3_button: {
+    bottom: Platform.OS ==='android' ? -20: -40,
   },
 });

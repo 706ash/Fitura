@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     minHeight: '100%',
   },
   cardSmallScreen: {
-    top: 170,
+    top: 0,
     width: 300,
     height: 300,
     marginTop: 160,
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
   },
   card: {
     position: 'relative',
-    marginTop: Platform.OS === 'android' ? height * 0.2 : height * 0.2,
+    marginTop: Platform.OS === 'android' ? height * 0.2 : height * 0,
     height: 270,
     marginHorizontal: 10,
     borderRadius: 20,
