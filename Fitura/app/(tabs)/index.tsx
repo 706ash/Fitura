@@ -7,16 +7,17 @@ export default function Dashboard() {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const scrollViewRef = useRef<ScrollView>(null);
   const [isPressed, setIsPressed] = useState<boolean>(false);
+  const [navbarContent, setNavbarContent] = useState<'image' | 'text2'>('image');
+  const [sectionOffsets, setSectionOffsets] = useState<{section2: number, section3: number}>({section2: 0, section3: 0});
 
-  const scrollToSection2 = () => {
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollTo({ y: section2Offset, animated: true });
+  const handleScroll = (event: any) => {
+    const y = event.nativeEvent.contentOffset.y;
+    if (sectionOffsets.section3 > 0 && y >= sectionOffsets.section3 - 50) {
+      setNavbarContent('text2');
+    } else {
+      setNavbarContent('image');
     }
   };
-
-  // On web use viewport height
-  const sectionHeight = Dimensions.get('window').height;
-  const section2Offset = sectionHeight;
 
   return (
     <View style={styles.container}>
@@ -26,23 +27,32 @@ export default function Dashboard() {
           <Image source={require('../../assets/icons/menu_icon.png')} style={styles.menu_icon} />
         </TouchableOpacity>
         <View style={styles.tag_div}>
-          <Image source={require('../../assets/images/CASUAL_text.png')} style={styles.tag} />
-        </View>                
+          {navbarContent === 'image' && (
+            <Image source={require('../../assets/images/CASUAL_text.png')} style={styles.tag} />
+          )}
+          {navbarContent === 'text2' && (
+            <Text style={styles.outfit_section_navbar_text}>OUTFIT HISTORY</Text>
+          )}
+        </View>
       </View>
 
-      <ScrollView ref={scrollViewRef} contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView
+        ref={scrollViewRef}
+        contentContainerStyle={{ flexGrow: 1 }}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+      >
         {/* SECTION 1 */}
         <LinearGradient
           colors={['#FF4E50', '#F9D423']}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
-          style={[styles.section_1, { minHeight: sectionHeight }]}
+          style={[styles.section_1, { minHeight: Dimensions.get('window').height }]}
         >
           <View style={styles.outfit}>
             <Image source={require('../../assets/recommendations/demo_shirt.png')} style={styles.outfit_image1} />
             <Image source={require('../../assets/recommendations/demo_cargo_pant.png')} style={styles.outfit_image2} />
           </View>
-
           <TouchableOpacity
             style={[styles.roundedButton, isPressed && styles.buttonPressed]}
             activeOpacity={0.7}
@@ -54,24 +64,37 @@ export default function Dashboard() {
         </LinearGradient>
 
         {/* SECTION 2 */}
-        <View style={[styles.section_2, { minHeight: sectionHeight }]}>
-          <Text style={styles.middle_section_text}>STYLE MEETS COMFORT. PAIR THIS LOOK WITH</Text>          
+        <View
+          style={[styles.section_2, { minHeight: Dimensions.get('window').height }]}
+          onLayout={e => {
+            const y = e?.nativeEvent?.layout?.y;
+            if (typeof y === 'number') {
+              setSectionOffsets(offsets => ({ ...offsets, section2: y }));
+            }
+          }}
+        >
+          <Text style={styles.middle_section_text}>STYLE MEETS COMFORT. PAIR THIS LOOK WITH</Text>
           <StackedCarousel />
         </View>
 
         {/* SECTION 3 */}
         <LinearGradient
-          colors={['#F9D423','#FF4E50']}
+          colors={['#F9D423', '#FF4E50']}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
-          style={[styles.section_1, { minHeight: sectionHeight * 1.5 }]}
+          style={[styles.section_1, { minHeight: Dimensions.get('window').height * 1.5 }]}
+          onLayout={e => {
+            const y = e?.nativeEvent?.layout?.y;
+            if (typeof y === 'number') {
+              setSectionOffsets(offsets => ({ ...offsets, section3: y }));
+            }
+          }}
         >
           <View style={styles.outfit}>
             <Image source={require('../../assets/outfit_history/polaroid_1.png')} style={styles.polaroid_1} />
             <Image source={require('../../assets/outfit_history/polaroid_2.png')} style={styles.polaroid_2} />
             <Image source={require('../../assets/outfit_history/polaroid_3.png')} style={styles.polaroid_3} />
           </View>
-
           <View style={styles.section_3_button}>
             <TouchableOpacity
               style={[styles.roundedButton, isPressed && styles.buttonPressed]}
@@ -79,17 +102,15 @@ export default function Dashboard() {
               onPressIn={() => setIsPressed(true)}
               onPressOut={() => setIsPressed(false)}
             >
-            <Text style={styles.buttonText}>SEE-MORE</Text>
-            </TouchableOpacity>            
-          </View>           
-          
+              <Text style={styles.buttonText}>SEE-MORE</Text>
+            </TouchableOpacity>
+          </View>
         </LinearGradient>
-      </ScrollView>      
+      </ScrollView>
     </View>
   );
 }
 
-const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -123,6 +144,17 @@ const styles = StyleSheet.create({
   menu_icon: {
     height: Platform.OS === 'android' ? 30 : 40,
     width: Platform.OS === 'android' ? 30 : 40,
+  },
+
+  outfit_section_navbar_text: {
+    top: Platform.OS === 'android'? 0: -5,
+    color: 'white',
+    fontSize: Platform.OS === 'android' ? 26 : 40,
+    letterSpacing: 3,
+    textAlign: 'center',
+    marginBottom: 20,
+    marginLeft: Platform.OS === 'android'? 0: 20
+
   },
 
   section_1: {
