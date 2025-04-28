@@ -38,7 +38,7 @@ export default function Dashboard() {
 
       <ScrollView
         ref={scrollViewRef}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={{ flexGrow: 1 }}
         onScroll={handleScroll}
         scrollEventThrottle={16}
       >
@@ -47,7 +47,7 @@ export default function Dashboard() {
           colors={['#FF4E50', '#F9D423']}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
-          style={styles.section_1}
+          style={[styles.section_1, { minHeight: Dimensions.get('window').height }]}
         >
           <View style={styles.outfit}>
             <Image source={require('../../assets/recommendations/demo_shirt.png')} style={styles.outfit_image1} />
@@ -65,7 +65,7 @@ export default function Dashboard() {
 
         {/* SECTION 2 */}
         <View
-          style={styles.section_2}
+          style={[styles.section_2, { minHeight: Dimensions.get('window').height }]}
           onLayout={e => {
             const y = e?.nativeEvent?.layout?.y;
             if (typeof y === 'number') {
@@ -82,7 +82,7 @@ export default function Dashboard() {
           colors={['#F9D423', '#FF4E50']}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
-          style={styles.section_3}
+          style={[styles.section_1, { minHeight: Dimensions.get('window').height * 1.5 }]}
           onLayout={e => {
             const y = e?.nativeEvent?.layout?.y;
             if (typeof y === 'number') {
@@ -115,35 +115,9 @@ export default function Dashboard() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1E1E1E',
+    backgroundColor: '#1E1E1E', // Important for web
   },
-  scrollContent: {
-    flexGrow: 1,
-    // For web, ensure minHeight fills viewport
-    ...(Platform.OS === 'web' ? { minHeight: '100vh' } : {}),
-  },
-  section_1: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    ...(Platform.OS === 'web' ? { minHeight: '100vh' } : { minHeight: Dimensions.get('window').height }),
-  },
-  section_2: {
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    backgroundColor: '#1E1E1E',
-    paddingTop: 50,
-    flex: 1,
-    ...(Platform.OS === 'web' ? { minHeight: '100vh' } : { minHeight: Dimensions.get('window').height }),
-  },
-  section_3: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    ...(Platform.OS === 'web'
-      ? { minHeight: '150vh' }
-      : { minHeight: Dimensions.get('window').height * 1.5 }),
-  },
+
   navbar: {
     height: 121,
     backgroundColor: '#1E1E1E',
@@ -181,6 +155,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginLeft: Platform.OS === 'android'? 0: 20
 
+  },
+
+  section_1: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   outfit: {
@@ -226,6 +205,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     letterSpacing: 5,
     textAlign: 'center',
+  },
+
+  section_2: {
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    backgroundColor: '#1E1E1E',
+    paddingTop: 50,
   },
 
   middle_section_text: {
