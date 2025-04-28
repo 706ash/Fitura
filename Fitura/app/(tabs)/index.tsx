@@ -4,9 +4,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 import StackedCarousel from '../../components/ui/StackedCarousel';
 
 export default function Dashboard() {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const scrollViewRef = useRef<ScrollView>(null);
-  const [isPressed, setIsPressed] = useState(false);
+  const [isPressed, setIsPressed] = useState<boolean>(false);
 
   const scrollToSection2 = () => {
     if (scrollViewRef.current) {
@@ -15,8 +15,8 @@ export default function Dashboard() {
   };
 
   // On web use viewport height
-  const sectionHeight = Platform.OS === 'web' ? '100vh' : Dimensions.get('window').height;
-  const section2Offset = Platform.OS === 'web' ? window.innerHeight : Dimensions.get('window').height; 
+  const sectionHeight = Dimensions.get('window').height;
+  const section2Offset = sectionHeight;
 
   return (
     <View style={styles.container}>

@@ -8,7 +8,8 @@ import {
   Platform, 
   ScrollView, 
   NativeSyntheticEvent, 
-  NativeScrollEvent 
+  NativeScrollEvent,
+  ViewStyle 
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient'; // Changed import
 
@@ -228,11 +229,10 @@ const styles = StyleSheet.create({
 
   image: {
     position: 'absolute',
-    top: -120, // Adjust this value to position the image higher above the card
-    width: '80%',
+    top: -120,
+    width: Platform.OS === 'web' ? '80%' : width * 0.8,
     height: 200,
-    zIndex: 1, // Ensure image appears above the gradient
-  },
+  } as const,
 
   title: {
     marginTop: 20,
@@ -244,8 +244,9 @@ const styles = StyleSheet.create({
     web: {
       scrollBehavior: 'smooth',
       cursor: 'grab',
-    }
-  }),
+    },
+    default: {}
+  }) as ViewStyle,
 });
 
 export default StackedCarousel;
