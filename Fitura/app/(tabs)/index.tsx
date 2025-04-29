@@ -111,74 +111,75 @@ export default function Dashboard() {
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1E1E1E', // Important for web
+    backgroundColor: '#1E1E1E',
   },
 
   navbar: {
     height: 121,
     backgroundColor: '#1E1E1E',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingTop: Platform.OS === 'web' ? 20 : (Platform.OS === 'android' ? 30 : 50),
+    justifyContent: 'space-between',
   },
 
   tag_div: {
-    paddingLeft: Platform.OS === 'android' ? 45 : 0,
-    paddingTop: Platform.OS === 'android' ? 50 : 38,
-    justifyContent: 'center',
+    flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
   },
 
   tag: {
-    width: Platform.OS === 'android' ? 250 : 320,
-    height: Platform.OS === 'android' ? 40 : 50,
+    width: 250,
+    height: 50,
+    resizeMode: 'contain',
   },
 
-  touch: {      
-    position: 'absolute',  
-    top: Platform.OS === 'android' ? 53 : 40,
-    left: 30,
+  touch: {
+    padding: 10,
+    zIndex: 1,
   },
 
   menu_icon: {
-    height: Platform.OS === 'android' ? 30 : 40,
-    width: Platform.OS === 'android' ? 30 : 40,
+    height: 30,
+    width: 30,
+    resizeMode: 'contain',
   },
 
   outfit_section_navbar_text: {
-    top: Platform.OS === 'android'? 0: -5,
     color: 'white',
-    fontSize: Platform.OS === 'android' ? 26 : 40,
+    fontSize: 28,
     letterSpacing: 3,
     textAlign: 'center',
-    marginBottom: 20,
-    marginLeft: Platform.OS === 'android'? 0: 20
-
+    marginBottom: 10,
   },
 
   section_1: {
     alignItems: 'center',
     justifyContent: 'center',
+    paddingVertical: 40,
   },
 
   outfit: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: Platform.OS === 'android' ? -60: -90,
   },
 
   outfit_image1: {
     width: 200,
     height: 200,
-    resizeMode: 'contain',        
+    resizeMode: 'contain',
   },
 
   outfit_image2: {
     width: 290,
     height: 290,
-    resizeMode: 'contain',        
-    marginTop: -5,
+    resizeMode: 'contain',
+    marginTop: -10,
   },
 
   roundedButton: {
@@ -189,9 +190,9 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 8 },
-    elevation: 8,
     shadowOpacity: 0.4,
     shadowRadius: 8,
+    elevation: 8,
   },
 
   buttonPressed: {
@@ -211,27 +212,39 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     backgroundColor: '#1E1E1E',
-    paddingTop: 50,
+    paddingVertical: 60,
+    paddingHorizontal: 20,
   },
 
   middle_section_text: {
     color: 'white',
-    fontSize: Platform.OS === 'android' ? 28 : 50,
+    fontSize: 30,
     letterSpacing: 3,
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 30,
   },
 
-  polaroid_1:{
+  polaroid_1: {
     marginTop: 40,
+    width: 300,
+    height: 300,
+    resizeMode: 'contain',
   },
-  polaroid_2:{
+  polaroid_2: {
     marginTop: 40,
+    width: 300,
+    height: 300,
+    resizeMode: 'contain',
   },
-  polaroid_3:{
+  polaroid_3: {
     marginTop: 40,
+    width: 300,
+    height: 300,
+    resizeMode: 'contain',
   },
+
   section_3_button: {
-    bottom: Platform.OS ==='android' ? -20: -40,
+    marginTop: 40,
+    alignItems: 'center',
   },
 });
