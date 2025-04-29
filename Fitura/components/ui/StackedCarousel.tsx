@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   dot: {
-    bottom: 70,
+    bottom: 0,
     width: 10,
     height: 10,
     borderRadius: 4,
