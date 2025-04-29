@@ -1,4 +1,4 @@
-import { Platform, View, TouchableOpacity, StyleSheet, Text, Image, ScrollView, Dimensions } from 'react-native';
+import { useWindowDimensions, Platform, View, TouchableOpacity, StyleSheet, Text, Image, ScrollView, Dimensions } from 'react-native';
 import { useState, useRef } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import StackedCarousel from '../../components/ui/StackedCarousel';
@@ -9,6 +9,9 @@ export default function Dashboard() {
   const [isPressed, setIsPressed] = useState<boolean>(false);
   const [navbarContent, setNavbarContent] = useState<'image' | 'text2'>('image');
   const [sectionOffsets, setSectionOffsets] = useState<{section2: number, section3: number}>({section2: 0, section3: 0});
+  const [parentSize, setParentSize] = useState({ width: 0, height: 0 }); // Move this line here
+  const { width } = useWindowDimensions();
+  const isSmallScreen = width < 500;
 
   const handleScroll = (event: any) => {
     const y = event.nativeEvent.contentOffset.y;
@@ -82,7 +85,7 @@ export default function Dashboard() {
           colors={['#F9D423', '#FF4E50']}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
-          style={[styles.section_1, { minHeight: Dimensions.get('window').height * 1.5 }]}
+          style={[styles.section_3, { minHeight: Dimensions.get('window').height * 1.5 }]}
           onLayout={e => {
             const y = e?.nativeEvent?.layout?.y;
             if (typeof y === 'number') {
@@ -90,11 +93,59 @@ export default function Dashboard() {
             }
           }}
         >
-          <View style={styles.outfit}>
-            <Image source={require('../../assets/outfit_history/polaroid_1.png')} style={styles.polaroid_1} />
+          <View style={{
+            paddingRight: isSmallScreen ? 0 : width * 0.3,
+            marginLeft: isSmallScreen ? 0 : width * 0.1,
+          }}>
+            <Image source={require('../../assets/outfit_history/polaroid_1.png')} style={[styles.polaroid_1, 
+            {
+              width: isSmallScreen ? 350 : width * 0.8,
+              height: isSmallScreen ? 350 : width * 0.8,
+              maxHeight: 600,
+              maxWidth: 600
+
+            }]} 
+            onLayout={(e) => { const { width, height } = e.nativeEvent.layout;
+            setParentSize({ width, height });
+            }}/>
+
+            <Image 
+              source={require('../../assets/outfit_history/shirt_1.png')} 
+              style={[
+                styles.shirt_1,
+                {
+                  width: parentSize.width * 0.53,
+                  height: parentSize.height * 0.53,
+                  top: isSmallScreen? parentSize.height * 0.33: parentSize.height * 0.3, 
+                  left: parentSize.width * 0.03,
+                }
+              ]} 
+            />
+
+            <Image 
+              source={require('../../assets/outfit_history/formal_text.png')} 
+              style={[
+                styles.shirt_1,
+                {
+                  width: parentSize.width * 0.3,
+                  height: parentSize.height * 0.3,
+                  top: isSmallScreen? parentSize.height * 0.36: parentSize.height * 0.33, 
+                  left: parentSize.width * 0.57,
+                }
+              ]} 
+            />
+
+            <Text style={{
+              position: 'absolute',
+              top: isSmallScreen? parentSize.height * 0.82: parentSize.height * 0.79, 
+              left: parentSize.width * 0.22,
+              transform: [{rotate: '-18deg'}],
+              fontSize: isSmallScreen? 14 : 18,
+            }}>Worn 2 days ago</Text>
+          </View>
+
             <Image source={require('../../assets/outfit_history/polaroid_2.png')} style={styles.polaroid_2} />
             <Image source={require('../../assets/outfit_history/polaroid_3.png')} style={styles.polaroid_3} />
-          </View>
           <View style={styles.section_3_button}>
             <TouchableOpacity
               style={[styles.roundedButton, isPressed && styles.buttonPressed]}
@@ -224,22 +275,31 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
 
+  section_3: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 40,
+  },
+
   polaroid_1: {
+    position: 'relative',
     marginTop: 40,
-    width: 300,
-    height: 300,
     resizeMode: 'contain',
   },
+
+  shirt_1: {
+    position: 'absolute',
+    resizeMode: 'contain',
+  },
+
   polaroid_2: {
+    position: 'relative',
     marginTop: 40,
-    width: 300,
-    height: 300,
     resizeMode: 'contain',
   },
   polaroid_3: {
+    position: 'relative',
     marginTop: 40,
-    width: 300,
-    height: 300,
     resizeMode: 'contain',
   },
 
